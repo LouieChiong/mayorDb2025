@@ -18,6 +18,53 @@
             </button>
         </div>
     @endif
+
+    @if (session()->has('duplicate-error'))
+        <div id="error-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+                <div class="flex justify-between items-center border-b pb-3 mb-4">
+                    <h2 class="text-xl font-bold text-red-600">Duplicate Entry</h2>
+                    <button onclick="document.getElementById('error-modal').remove()"
+                        class="text-red-500 hover:text-red-700">
+                        &times;
+                    </button>
+                </div>
+                <div class="text-gray-800">
+                    <p class="mb-4">{{ session('duplicate-error') }}</p>
+                    @if (session()->has('data'))
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>
+                                <strong>First Name:</strong> {{ session('data')['first_name'] }}
+                            </li>
+                            <li>
+                                <strong>Last Name:</strong> {{ session('data')['last_name'] }}
+                            </li>
+                            <li>
+                                <strong>Barangay:</strong> {{ session('data')['barangay'] }}
+                            </li>
+                            <li>
+                                <strong>Purok:</strong> {{ session('data')['purok'] }}
+                            </li>
+                            <li>
+                                <strong>Precinct:</strong> {{ session('data')['precinct'] }}
+                            </li>
+                            <li>
+                                <strong>Under Leader:</strong> {{ session('data')['leader'] }}
+                            </li>
+                        </ul>
+                    @endif
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button onclick="document.getElementById('error-modal').remove()"
+                        class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+
     <div class="flex flex-col w-full gap-5">
         <form class="flex flex-col justify-between items-center w-full h-full" wire:submit.prevent="submit">
             <div class="p-3 pl-7 w-full justify-start">
@@ -143,7 +190,16 @@
                                         </td>
                                     @endif
                                     <td class="px-4 py-2">
-
+                                        <button wire:key="voter-{{ $voter->id }}"
+                                            wire:click="editVoter({{ $voter->id }})"
+                                            class="p-2 px-3 bg-blue-400 text-white rounded-xl">
+                                            Edit
+                                        </button>
+                                        <button wire:key="voter-{{ $voter->id }}"
+                                            wire:click="deleteVoter({{ $voter->id }})"
+                                            class="p-2 px-3 bg-red-400 text-white rounded-xl">
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -153,4 +209,118 @@
             </div>
         </div>
     </div>
+
+    <div id="editModal"
+        class="{{ $isModalOpen ? '' : 'hidden' }} fixed inset-0 z-50 p-12 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white rounded-lg shadow-lg w-[540px] relative">
+            <div class="flex justify-between items-center p-5">
+                <h1 class="text-xl">Edit Barangay Information</h1>
+                <button type="button" class="text-gray-700 hover:text-gray-900 js-close-modal"
+                    wire:click="closeModal()">
+                    &#x2715; <!-- Close Icon -->
+                </button>
+            </div>
+            <div class="flex flex-col items-center justify-center h-full p-5 w-full gap-y-3">
+                <div class="flex justify-center flex-col items-start w-full">
+                    <div class="w-full">
+                        <label for="first_name"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First Name</label>
+                        <input type="text" id="js-first-name" wire:model="first_name"
+                            class="disabled cursor-not-allowed bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                            placeholder="" disabled />
+                    </div>
+                    <div class="w-full">
+                        <label for="last_name"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
+                        <input type="text" id="js-last-name" wire:model="last_name"
+                            class="disabled cursor-not-allowed bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                            placeholder=""disabled />
+                    </div>
+                    <div class="w-1/2">
+                        <label for="js-status" class="block mb-2 text-sm font-medium">Status</label>
+
+                        <select id="js-status" wire:model="edit_status"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                            <option value="0" {{ $this->status == 0 ? 'selected' : '' }}>Deceased</option>
+                            <option value="1" {{ $this->status == 1 ? 'selected' : '' }}>Alive</option>
+                        </select>
+                    </div>
+
+                    <div class="w-full">
+                        <label for="barangay"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Barangay</label>
+                        <select id="barangay" wire:model.live="edit_barangay" required
+                            class="bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                            <option value="">Select Barangay</option>
+                            @foreach ($barangays as $barangay)
+                                <option value="{{ $barangay }}">
+                                    {{ $barangay }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="w-full">
+                        <label for="purok_name"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Purok</label>
+                        <select id="purok_name" wire:model.live="edit_purok" required
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            {{ empty($puroks) ? 'disabled' : '' }}>
+                            <option value="">Select Purok</option>
+                            @foreach ($puroks as $purok)
+                                <option value="{{ $purok }}">
+                                    {{ $purok }}</option>
+                            @endforeach
+                        </select>
+                        @error('edit_purok')
+                            <span class="error text-red-400">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="w-full">
+                        <label for="precinct"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Precinct</label>
+                        <select id="precinct" wire:model="edit_precinct" required
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            {{ empty($puroks) ? 'disabled' : '' }}>
+                            <option value="">Select Precinct</option>
+                            @foreach ($precincts as $precinct)
+                                <option value="{{ $precinct }}">
+                                    {{ $precinct }}</option>
+                            @endforeach
+                        </select>
+                        @error('edit_precinct')
+                            <span class="error text-red-400">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="flex w-full justify-center items-center gap-x-3">
+                    <button wire:click="updateVoter()"
+                        class="px-3 py-2 bg-blue-500 rounded-xl text-white mt-4">Update</button>
+                    <button wire:click="closeModal()"
+                        class="px-3 py-2 bg-red-500 rounded-xl text-white mt-4 js-close-modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+<script>
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('openModal', (data) => {
+            $(document).ready(() => {
+                $('#js-first-name').val(data[0].first_name);
+                $('#js-last-name').val(data[0].last_name);
+                $('#js-status').find('option:first').prop('selected', true);
+                $('#editModal').removeClass('hidden');
+            });
+        });
+
+        Livewire.on('closeModal', () => {
+            $(document).ready(() => {
+                $('#editModal').addClass('hidden');
+            });
+        });
+    });
+</script>

@@ -64,7 +64,8 @@
         <div class="bg-white rounded-lg shadow-lg w-[540px] relative">
             <div class="flex justify-between items-center p-5">
                 <h1 class="text-xl">Edit Barangay Information</h1>
-                <button type="button" class="text-gray-700 hover:text-gray-900 js-close-modal">
+                <button type="button" class="text-gray-700 hover:text-gray-900 js-close-modal"
+                    wire:click="closeModal()">
                     &#x2715; <!-- Close Icon -->
                 </button>
             </div>
