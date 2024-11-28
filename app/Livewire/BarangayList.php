@@ -32,13 +32,11 @@ class BarangayList extends Component
         $this->barangay_id = $barangay->id;
         $this->barangay_name = $barangay->barangay_name;
         $this->purok_name = $barangay->purok_name;
-        $this->precinct = $barangay->precinct;
 
         $this->dispatch('openModal', [
             'id' => $barangay->id,
             'barangay_name' => $barangay->barangay_name,
             'purok_name' => $barangay->purok_name,
-            'precinct' => $barangay->precinct,
         ]);
     }
 
@@ -48,7 +46,6 @@ class BarangayList extends Component
         $barangay = Barangay::find($this->barangay_id);
         $barangay->barangay_name = $this->barangay_name;
         $barangay->purok_name = $this->purok_name;
-        $barangay->precinct = $this->precinct;
 
         // Handle file upload if there's a new file
         if ($this->file) {

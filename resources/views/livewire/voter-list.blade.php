@@ -34,10 +34,13 @@
                     @if (session()->has('data'))
                         <ul class="list-disc pl-5 space-y-2">
                             <li>
+                                <strong>Last Name:</strong> {{ session('data')['last_name'] }}
+                            </li>
+                            <li>
                                 <strong>First Name:</strong> {{ session('data')['first_name'] }}
                             </li>
                             <li>
-                                <strong>Last Name:</strong> {{ session('data')['last_name'] }}
+                                <strong>Middle Name:</strong> {{ session('data')['middle_name'] }}
                             </li>
                             <li>
                                 <strong>Barangay:</strong> {{ session('data')['barangay'] }}
@@ -69,13 +72,23 @@
         <form class="flex flex-col justify-between items-center w-full h-full" wire:submit.prevent="submit">
             <div class="p-3 pl-7 w-full justify-start">
                 <h3 for="name" class="block mb-2 text-gray-900 text-[18px]">Leader
-                    Name: <b>{{ $this->leader->name }}</b> </h3>
+                    Name: <b>{{ $this->leader->last_name .', '. $this->leader->first_name }}</b> </h3>
             </div>
             <div class="p-3 pl-7 flex justify-start gap-x-3 w-full h-full">
                 <div class="w-[30%]">
+                    <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last
+                        Name</label>
+                    <input type="text" id="last_name" wire:model="last_name" placeholder="Enter Last Name"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                        placeholder="John" required />
+                    @error('last_name')
+                        <span class="error text-red-500">{{ $message }}</span>
+                    @enderror
+                </div>
+                    <div class="w-[30%]">
                     <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First
                         Name</label>
-                    <input type="text" id="first_name" wire:model="first_name" placeholder="Enter Barangay Name"
+                    <input type="text" id="first_name" wire:model="first_name" placeholder="Enter First Name"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                         placeholder="John" required />
                     @error('first_name')
@@ -83,12 +96,12 @@
                     @enderror
                 </div>
                 <div class="w-[30%]">
-                    <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last
+                    <label for="middle_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last
                         Name</label>
-                    <input type="text" id="last_name" wire:model="last_name" placeholder="Enter Barangay Name"
+                    <input type="text" id="middle_name" wire:model="middle_name" placeholder="Enter Middle Name"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                         placeholder="John" required />
-                    @error('last_name')
+                    @error('middle_name')
                         <span class="error text-red-500">{{ $message }}</span>
                     @enderror
                 </div>
@@ -136,14 +149,9 @@
                 <div class="w-[30%]">
                     <label for="precinct"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Precinct</label>
-                    <select id="precinct" wire:model.live="precinct"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        <option value="">Select Precinct</option>
-                        @foreach ($precincts as $precinct)
-                            <option value="{{ $precinct }}">
-                                {{ $precinct }}</option>
-                        @endforeach
-                    </select>
+                    <input type="text" id="precinct" wire:model="precinct" placeholder="Enter Precinct"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                            placeholder="Enter Precinct"/>
                     @error('precinct')
                         <span class="error text-red-500">{{ $message }}</span>
                     @enderror
@@ -157,8 +165,8 @@
                 <table class="w-full table-sm border-collapse border-2 rounded-lg">
                     <thead>
                         <tr class="bg-blue-100">
+                             <th class="px-4 py-2 text-left border">Last Name</th>
                             <th class="px-4 py-2 text-left border">First Name</th>
-                            <th class="px-4 py-2 text-left border">Last Name</th>
                             <th class="px-4 py-2 text-left border">Barangay</th>
                             <th class="px-4 py-2 text-left border">Purok</th>
                             <th class="px-4 py-2 text-left border">Precinct</th>
@@ -177,11 +185,11 @@
                             @foreach ($voters as $voter)
                                 <tr class="hover:bg-gray-50 odd:bg-gray-50 even:bg-white"
                                     wire:key="voter-{{ $voter->id }}">
-                                    <td class="px-4 py-2">{{ $voter->first_name }}</td>
                                     <td class="px-4 py-2">{{ $voter->last_name }}</td>
+                                    <td class="px-4 py-2">{{ $voter->first_name }}</td>
                                     <td class="px-4 py-2">{{ $voter->barangay->barangay_name ?? '-' }}</td>
                                     <td class="px-4 py-2">{{ $voter->barangay->purok_name ?? '-' }}</td>
-                                    <td class="px-4 py-2">{{ $voter->barangay->precinct ?? '-' }}</td>
+                                    <td class="px-4 py-2">{{ $voter->precinct ?? '-' }}</td>
                                     @if ($voter->is_alive == 1)
                                         <td class="px-4 py-2 text-white"><span class="bg-green-500 p-2">Alive</span>
                                         </td>
@@ -236,6 +244,13 @@
                             class="disabled cursor-not-allowed bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                             placeholder=""disabled />
                     </div>
+                    <div class="w-full">
+                        <label for="middle_name"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Middle Name</label>
+                        <input type="text" id="js-middle-name" wire:model="middle_name"
+                            class="disabled cursor-not-allowed bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                            placeholder=""disabled />
+                    </div>
                     <div class="w-1/2">
                         <label for="js-status" class="block mb-2 text-sm font-medium">Status</label>
 
@@ -277,17 +292,11 @@
                     </div>
 
                     <div class="w-full">
-                        <label for="precinct"
+                        <label for="edit_precinct"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Precinct</label>
-                        <select id="precinct" wire:model="edit_precinct" required
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            {{ empty($puroks) ? 'disabled' : '' }}>
-                            <option value="">Select Precinct</option>
-                            @foreach ($precincts as $precinct)
-                                <option value="{{ $precinct }}">
-                                    {{ $precinct }}</option>
-                            @endforeach
-                        </select>
+                        <input type="text" id="js-edit-precinct" wire:model="edit_precinct" placeholder="Enter Precinct" required
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                            placeholder="Enter Precinct"/>
                         @error('edit_precinct')
                             <span class="error text-red-400">{{ $message }}</span>
                         @enderror
@@ -312,6 +321,8 @@
             $(document).ready(() => {
                 $('#js-first-name').val(data[0].first_name);
                 $('#js-last-name').val(data[0].last_name);
+                $('#js-middle-name').val(data[0].middle_name);
+                $('#js-edit-precinct').val(data[0].precinct);
                 $('#js-status').find('option:first').prop('selected', true);
                 $('#editModal').removeClass('hidden');
             });

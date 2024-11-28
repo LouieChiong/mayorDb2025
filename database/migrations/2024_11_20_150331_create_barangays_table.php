@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('barangays', function (Blueprint $table) {
             $table->id();
             $table->string('barangay_name');
-            $table->string('purok_name');
-            $table->string('precinct');
+            $table->string('purok_name'); 
             $table->string('file_path')->nullable();
             $table->timestamps();
         });

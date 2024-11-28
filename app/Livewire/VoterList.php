@@ -15,6 +15,7 @@ class VoterList extends Component
     public $editVoterId;
     public $first_name = '';
     public $last_name = '';
+    public $middle_name = '';
     public $barangay = '';
     public $purok = '';
     public $precinct = '';
@@ -51,16 +52,6 @@ class VoterList extends Component
             ->unique();
     }
 
-    public function updatingPurok($value)
-    {
-        $this->reset('precinct');
-        $this->precincts = Barangay::where('purok_name', '=', $value)
-            ->where('barangay_name', '=', $this->barangay)
-            ->get()
-            ->pluck('precinct')
-            ->unique();
-    }
-
     // Hook for when a property starts updating
     public function updatingEditBarangay($value)
     {
@@ -69,16 +60,6 @@ class VoterList extends Component
         $this->puroks = Barangay::where('barangay_name', '=', $value)
             ->get()
             ->pluck('purok_name')
-            ->unique();
-    }
-
-    public function updatingEditPurok($value)
-    {
-        $this->reset('precinct');
-        $this->precincts = Barangay::where('purok_name', '=', $value)
-            ->where('barangay_name', '=', $this->barangay)
-            ->get()
-            ->pluck('precinct')
             ->unique();
     }
 
@@ -91,6 +72,8 @@ class VoterList extends Component
         $this->dispatch('openModal', [
             'first_name' => $voter->first_name,
             'last_name' => $voter->last_name,
+            'middle_name' => $voter->middle_name,
+            'precinct' => $voter->precinct,
             'is_alive' => $voter->is_alive,
         ]);
     }
@@ -104,6 +87,7 @@ class VoterList extends Component
         ]);
 
         $voter = Voter::find($this->editVoterId);
+        $voter->precinct = $this->edit_precinct;
 
         if($this->edit_status != '') {
             $voter->is_alive = (int)$this->edit_status;
@@ -112,7 +96,6 @@ class VoterList extends Component
         if ($this->edit_barangay != null) {
             $voter->barangay_id =  Barangay::where('barangay_name', '=', $this->edit_barangay)
                 ->where('purok_name', '=', $this->edit_purok)
-                ->where('precinct', '=', $this->edit_precinct)
                 ->get()->first()->id;
         }
 
@@ -139,6 +122,7 @@ class VoterList extends Component
         $this->validate([
             'first_name' => 'required',
             'last_name' => 'required',
+            'middle_name' => 'required',
             'barangay' => 'required',
             'purok' => 'required_with:barangay',
             'precinct' => 'required_with:purok',
@@ -146,7 +130,6 @@ class VoterList extends Component
 
         $barangay = Barangay::where('barangay_name', '=', $this->barangay)
             ->where('purok_name', '=', $this->purok)
-            ->where('precinct', '=', $this->precinct)
             ->first();
 
         $voter = Voter::where('first_name', $this->first_name)->where('last_name', $this->last_name)->first();
@@ -158,24 +141,27 @@ class VoterList extends Component
                 ->with('data', [
                     'first_name' => $voter->first_name,
                     'last_name' => $voter->last_name,
+                    'middle_name' => $voter->middle_name,
                     'barangay' => $voter->barangay->barangay_name ?? 'not assigned',
                     'purok' => $voter->barangay->purok_name ?? 'not assigned',
-                    'precinct' => $voter->barangay->precinct ?? 'not assigned',
-                    'leader' => $voter->leader->name ,
+                    'precinct' => $voter->precinct ?? 'not assigned',
+                    'leader' => $voter->leader->last_name . ', ' . $voter->leader->first_name ?? 'not assigned',
                 ]);
         }
 
         Voter::create([
             'leader_id' => $this->leader->id,
             'barangay_id' => $barangay->id,
+            'precinct' => $this->precinct,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
+            'middle_name' => $this->middle_name,
             'is_alive' => (int)$this->status,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        $this->reset('first_name', 'last_name', 'barangay', 'purok', 'precinct', 'status');
+        $this->reset('first_name', 'last_name', 'middle_name', 'barangay', 'purok', 'precinct');
         $this->refreshVoterList();
         return redirect()->to(request()->header('Referer'))->with('success', 'Voter registered successfully!');
     }

@@ -10,9 +10,11 @@ class LeaderForm extends Component
 {
     public $barangay;
     public $barangays;
-    public $name;
     public $purok_name;
     public $precinct;
+    public $first_name;
+    public $middle_name;
+    public $last_name;
     public $puroks = [];
     public $precincts = [];
 
@@ -32,32 +34,24 @@ class LeaderForm extends Component
             ->pluck('purok_name');
     }
 
-    public function updatingPurokName($value)
-    {
-        $this->reset('precinct');
-        $this->precincts = Barangay::where('purok_name', '=', $value)
-            ->where('barangay_name', '=', $this->barangay)
-            ->get()
-            ->unique('precinct')
-            ->pluck('precinct');
-    }
-
     public function submit()
     {
         // Validation
         $this->validate([
-            'name' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
             'barangay' => 'required',
-            'purok_name' => 'required',
-            'precinct' => 'required',
+            'purok_name' => 'required_with:barangay',
+            'precinct' => 'required_with:barangay,purok_name',
         ]);
 
         $barangay = Barangay::where('barangay_name', '=', $this->barangay)
             ->where('purok_name','=', $this->purok_name)
-            ->where('precinct','=', $this->precinct)
             ->first();
 
-        $leader = Leader::where('name', '=', $this->name)->get();
+        $leader = Leader::where('first_name', '=', $this->first_name)
+            ->where('last_name', '=', $this->last_name)
+            ->get();
 
         if ($leader->isNotEmpty()) {
             return redirect()->to(request()->header('Referer'))->with('error', 'Leader already exists!');
@@ -65,13 +59,15 @@ class LeaderForm extends Component
 
         // Save the data to the database
         Leader::create([
-            'name' => $this->name,
-            'position' => 'Leader',
+            'first_name' => $this->first_name,
+            'middle_name' => $this->middle_name,
+            'last_name' => $this->last_name,
+            'precinct' => $this->precinct,
             'barangay_id' => $barangay->id,
         ]);
 
         // Reset the form fields
-        $this->reset(['name', 'barangay', 'purok_name', 'precinct']);
+        $this->reset(['first_name', 'middle_name', 'last_name', 'barangay', 'purok_name', 'precinct']);
 
         return redirect()->to(request()->header('Referer'))->with('success', 'Barangay registered successfully!');
     }

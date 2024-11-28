@@ -15,18 +15,13 @@ class BarangayDropdown extends Component
     public $precincts = [];
 
     public function mount() {
-        $this->barangays = Barangay::all()->pluck(['barangay_name'])->unique('barangay_name');
+        $this->barangays = Barangay::all()->pluck(['barangay_name'])->unique();
     }
 
     public function updatedBarangay($value) {
         $this->reset(['puroks', 'precincts']);
         $this->barangay = $value;
         $this->puroks = Barangay::where('barangay_name', $value)->pluck('purok_name')->unique();
-    }
-
-    public function updatedPurok($value) {
-        $this->reset('precincts');
-        $this->precincts = Barangay::where('barangay_name', $this->barangay)->where('purok_name', $value)->pluck('precinct')->unique();
     }
 
     public function render()

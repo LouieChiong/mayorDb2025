@@ -29,10 +29,10 @@
                             @foreach ($leaders as $leader)
                                 <tr class="hover:bg-gray-50 odd:bg-gray-100 even:bg-white"
                                     wire:key="leader-{{ $leader->id }}">
-                                    <td class="px-4 py-2">{{ $leader->name }}</td>
+                                    <td class="px-4 py-2">{{ $leader->last_name .', '. $leader->first_name }}</td>
                                     <td class="px-4 py-2">{{ $leader->barangay->barangay_name ?? '-' }}</td>
                                     <td class="px-4 py-2">{{ $leader->barangay->purok_name ?? '-' }}</td>
-                                    <td class="px-4 py-2">{{ $leader->barangay->precinct ?? '-' }}</td>
+                                    <td class="px-4 py-2">{{ $leader->precinct ?? '-' }}</td>
                                     <td class="px-4 py-2">
                                         <a href="{{ route('voter-list', ['leaderId' => $leader->id]) }}"
                                             class="px-2 py-1 bg-green-500 hover:bg-green-300 text-white rounded-xl">

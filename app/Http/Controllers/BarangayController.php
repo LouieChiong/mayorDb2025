@@ -23,7 +23,7 @@ class BarangayController extends Controller
     public function voters(Request $request)
     {
         try {
-            $leaders = Leader::whereHas('barangay', function ($query) use ($request) {
+            $query = Leader::whereHas('barangay', function ($query) use ($request) {
                 if ($request->filled('barangay')) {
                     $query->where('barangay_name', $request->barangay);
                 }
@@ -31,11 +31,22 @@ class BarangayController extends Controller
                 if ($request->filled('purok')) {
                     $query->where('purok_name', $request->purok);
                 }
+            });
 
-                if ($request->filled('precinct')) {
-                    $query->where('precinct', $request->precinct);
-                }
-            })->get();
+
+            if ($request->filled('first_name')) {
+                $query->where('first_name', 'like', '%' . $request->first_name . '%');
+            }
+
+            if ($request->filled('last_name')) {
+                $query->where('last_name', 'like', '%' . $request->last_name . '%');
+            }
+
+            if ($request->filled('middle_name')) {
+                $query->where('middle_name', 'like', '%' . $request->middle_name . '%');
+            }
+
+            $leaders =  $query->get();
 
             return view('voters', ['leaders' => $leaders]);
 

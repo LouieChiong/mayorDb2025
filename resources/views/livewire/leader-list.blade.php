@@ -36,11 +36,11 @@
                     @foreach ($leaders as $leader)
                         <tr class="bg-white border-b flex items-center hover:bg-gray-50 text-sm"
                             wire:key="barangay-{{ $leader->id }}">
-                            <td class="w-[30%] p-4">{{ $leader->name }}</td>
+                            <td class="w-[30%] p-4">{{ $leader->first_name . ' '. $leader->last_name  }}</td>
                             <td class="w-[15%] px-4 py-4 text-left">{{ $leader->barangay->barangay_name ?? '-' }}</td>
                             <td class="w-[15%] px-4 py-4 text-left">{{ $leader->barangay->purok_name ?? '-' }}</td>
-                            <td class="w-[10%] px-4 py-4 text-left">{{ $leader->barangay->precinct ?? '-' }}</td>
-                            <td class="w-[20%] px-4 py-4 flex space-x-2">
+                            <td class="w-[10%] px-4 py-4 text-left">{{ $leader->precinct ?? '-' }}</td>
+                            <td class="w-[30%] px-4 py-4 flex space-x-2">
                                 <button wire:key="leader-{{ $leader->id }}"
                                     wire:click="editL1eader({{ $leader->id }})"
                                     class="p-2 px-3 bg-blue-400 text-white rounded-xl">
@@ -51,6 +51,10 @@
                                     class="p-2 px-3 bg-red-400 text-white rounded-xl">
                                     Delete
                                 </button>
+                                <a href="{{ route('voter-list', ['leaderId' => $leader->id]) }}"
+                                    class="px-2 py-1 bg-green-500 hover:bg-green-300 text-white rounded-xl flex justify-center text-center items-center">
+                                    <span> Voter List</span>
+                                </a>
                             </td>
                         </tr>
                     @endforeach
@@ -70,11 +74,25 @@
                 </button>
             </div>
             <div class="flex flex-col items-center justify-center h-full p-5 w-full gap-y-3">
-                <div class="flex justify-center flex-col items-start w-full">
+                <div class="flex justify-center flex-col items-start w-full gap-y-2">
                     <div class="w-full">
-                        <label for="name"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Barangay Name</label>
-                        <input type="text" id="name" wire:model="leader_name" placeholder="Enter Barangay Name"
+                        <label for="first_name"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First Name</label>
+                        <input type="text" id="first_name" wire:model="first_name" placeholder="Enter First Name"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                            placeholder="John" required />
+                    </div>
+                    <div class="w-full">
+                        <label for="last_name"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
+                        <input type="text" id="last_name" wire:model="last_name" placeholder="Enter Last Name"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                            placeholder="John" required />
+                    </div>
+                    <div class="w-full">
+                        <label for="middle_name"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Middle Name</label>
+                        <input type="text" id="middle_name" wire:model="middle_name" placeholder="Enter Barangay Name"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                             placeholder="John" required />
                     </div>
@@ -112,14 +130,9 @@
                     <div class="w-full">
                         <label for="precinct"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Precinct</label>
-                        <select id="precinct" wire:model="edit_precinct" required
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            {{ empty($puroks) ? 'disabled' : '' }}>
-                            <option value="">Select Precinct</option>
-                            @foreach ($precincts as $precinct)
-                                <option value="{{ $precinct }}">{{ $precinct }}</option>
-                            @endforeach
-                        </select>
+                        <input type="text" id="edit_precinct" wire:model="edit_precinct" placeholder="Enter Precinct"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                            placeholder="John" required />
                         @error('edit_precinct')
                             <span class="error text-red-400">{{ $message }}</span>
                         @enderror
@@ -140,15 +153,18 @@
 <script>
     document.addEventListener('livewire:init', () => {
         Livewire.on('openModal', (data) => {
+            console.log(data[0].precinct)
             $(document).ready(() => {
-                $('#name').val(data.leader_name);
+                $('#first_name').val(data[0].first_name);
+                $('#last_name').val(data[0].last_name);
+                $('#middle_name').val(data[0].middle_name);
+                $('#edit_precinct').val(data[0].precinct);
                 $('#editModal').removeClass('hidden');
             });
         });
 
         Livewire.on('closeModal', () => {
             $(document).ready(() => {
-                $('#name').val();
                 $('#barangay').find('option:first').prop('selected', true);
                 $('#editModal').addClass('hidden');
             });

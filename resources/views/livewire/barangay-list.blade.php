@@ -25,8 +25,7 @@
                 <thead>
                     <tr class="bg-gray-100">
                         <th class="px-4 py-2 text-left">Barangay</th>
-                        <th class="px-4 py-2 text-left">Purok</th>
-                        <th class="px-4 py-2 text-left">Precinct</th>
+                        <th class="px-4 py-2 text-left">Purok</th> 
                         <th class="px-4 py-2 text-left">Actions</th>
                     </tr>
                 </thead>
@@ -34,8 +33,7 @@
                     @foreach ($barangays as $barangay)
                         <tr class="bg-white border-b hover:bg-gray-50" wire:key="barangay-{{ $barangay->id }}">
                             <td class="w-4 p-4">{{ $barangay->barangay_name ?? '-' }}</td>
-                            <td class="px-6 py-4">{{ $barangay->purok_name ?? '-' }}</td>
-                            <td class="px-6 py-4">{{ $barangay->precinct ?? '-' }}</td>
+                            <td class="px-6 py-4">{{ $barangay->purok_name ?? '-' }}</td> 
                             <td class="px-6 py-4 flex space-x-2">
                                 <button wire:key="barangay-{{ $barangay->id }}"
                                     wire:click="editBarangay({{ $barangay->id }})"
@@ -50,7 +48,7 @@
                                 @if ($barangay->file_path)
                                     <button onclick="showPdf('{{ asset('storage/' . $barangay->file_path) }}')"
                                         class="p-2 px-3 bg-blue-400 text-white rounded-xl">
-                                        View
+                                        File
                                     </button>
                                 @endif
                             </td>
@@ -87,15 +85,6 @@
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Purok Name</label>
                             <input type="text" id="edit_purok_name" wire:model="purok_name"
                                 placeholder="Enter Sitio Name"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                required />
-                        </div>
-
-                        <div class="w-full">
-                            <label for="precinct"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Purok Name</label>
-                            <input type="text" id="edit_precinct" wire:model="precinct"
-                                placeholder="Enter precinct number"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                 required />
                         </div>
@@ -154,7 +143,6 @@
                 $('#edit_barangay_id').val(data[0].id);
                 $('#edit_barangay_name').val(data[0].barangay_name);
                 $('#edit_purok_name').val(data[0].purok_name);
-                $('#edit_precinct').val(data[0].precinct);
                 $('#editModal').removeClass('hidden');
             });
         });

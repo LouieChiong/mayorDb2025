@@ -17,8 +17,7 @@ class BarangayForm extends Component
 
     protected $rules = [
         'barangay_name' => 'required|string|max:255',
-        'purok_name' => 'required|string|max:255',
-        'precinct' => 'required|string|max:255',
+        'purok_name' => 'required|string|max:255', 
         'file' => 'nullable|file|mimes:pdf',
     ];
 
@@ -43,8 +42,7 @@ class BarangayForm extends Component
         // Save the data to the database
         Barangay::create([
             'barangay_name' => $this->barangay_name,
-            'purok_name' => $this->purok_name,
-            'precinct' => $this->precinct,
+            'purok_name' => $this->purok_name, 
             'file_path' => $validatedData['file_path'] ?? null,
         ]);
 

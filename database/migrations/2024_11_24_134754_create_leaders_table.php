@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('leaders', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('position');
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('middle_name');
+            $table->string('precinct')->nullable();
             $table->unsignedBigInteger('barangay_id');
             $table->timestamps();
         });

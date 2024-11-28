@@ -1,21 +1,38 @@
 <div>
-    <div class="flex items-center justify-center h-full p-5 w-full gap-y-4">
-        <div class="flex py-5 flex-row items-center justify-start w-1/4 gap-x-3">
-            <form wire:submit.prevent="submit">
-                <h2 class="pl-5">Add New Leader</h2>
-                <div class="p-5 mt-2 flex flex-col gap-y-4">
-                    <div>
-                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Leader
-                            Name</label>
-                        <input type="text" id="name" wire:model="name" placeholder="Enter Barangay Name"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                            placeholder="John" required />
+    <div class="flex flex-col items-center justify-center h-full p-5 w-full gap-y-4">
+        <div class="flex py-5 flex-col items-start justify-start w-full gap-x-3">
+            <form wire:submit.prevent="submit" class="flex flex-col w-full">
+                <div class="flex flex-col w-full">
+                    <h1 class="pl-5 text-center font-bold">Add New Leader</h1>
+                    <div class="p-5 mt-2 flex gap-y-4 gap-x-4 w-full">
+                        <div class="w-full">
+                            <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last
+                                Name</label>
+                            <input type="text" id="last_name" wire:model="last_name" placeholder="Enter Last Name"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-l  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                placeholder="John" required />
+                        </div>
+                        <div class="w-full">
+                            <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First
+                                Name</label>
+                            <input type="text" id="first_name" wire:model="first_name" placeholder="Enter First Name"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                placeholder="John" required />
+                        </div>
+                        <div class="w-full">
+                            <label for="middle_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Middle
+                                Name</label>
+                            <input type="text" id="middle_name" wire:model="middle_name" placeholder="Enter Middle Name"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                placeholder="John" required />
+                        </div>
                     </div>
-
-                    <div class="">
+                </div>
+                <div class="flex flex-row w-full gap-x-4 pl-5">
+                    <div class="w-full">
                         <label for="barangay"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Barangay</label>
-                        <select id="barangay" wire:model.live="barangay"
+                        <select id="barangay" wire:model.live="barangay" required
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             <option value="">Select Barangay</option>
                             @foreach ($barangays->unique('barangay_name') as $barangay)
@@ -25,7 +42,7 @@
                         </select>
                     </div>
 
-                    <div class="">
+                    <div class="w-full">
                         <label for="purok_name"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Purok</label>
                         <select id="purok_name" wire:model.live="purok_name"
@@ -36,31 +53,26 @@
                                 <option value="{{ $purok }}">{{ $purok }}</option>
                             @endforeach
                         </select>
+                        @error('purok_name')
+                            <span class="text-red-500">{{ $message }}</span>
+                        @enderror
                     </div>
 
-                    <div class="">
+                    <div class="w-full">
                         <label for="precinct"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Precinct</label>
-                        <select id="precinct" wire:model="precinct"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            {{ empty($puroks) ? 'disabled' : '' }}>
-                            <option value="">Select Precinct</option>
-                            @foreach ($precincts as $id => $precinct)
-                                <option value="{{ $precinct }}">{{ $precinct }}</option>
-                            @endforeach
-                        </select>
+                        <input type="text" id="precinct" wire:model="precinct" placeholder="Enter Precinct" required
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                            placeholder="Enter Precinct"/>
                     </div>
+                </div>
 
-                    @error('name')
-                        <span class="error">{{ $message }}</span>
-                    @enderror
+                <div class="flex flex-row w-full gap-x-4 pl-5 mt-5 justify-center items-center">
                     <button type="submit" class="px-3 py-2 bg-blue-300 rounded-xl text-white">Submit</button>
                 </div>
             </form>
-
-
         </div>
-        <div class="w-3/4">
+        <div class="w-full">
             @livewire('leader-list')
         </div>
     </div>

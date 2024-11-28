@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
+            $table->string('middle_name');
+            $table->string('precinct'); 
             $table->unsignedBigInteger('leader_id');
             $table->unsignedBigInteger('barangay_id');
             $table->unsignedSmallInteger('is_alive')->default(1);
