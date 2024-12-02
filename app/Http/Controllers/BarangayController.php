@@ -20,7 +20,7 @@ class BarangayController extends Controller
         return view('leaders');
     }
 
-    public function voters(Request $request)
+    public function leaderSearch(Request $request)
     {
         try {
             $query = Leader::whereHas('barangay', function ($query) use ($request) {
@@ -48,8 +48,42 @@ class BarangayController extends Controller
 
             $leaders =  $query->get();
 
-            return view('voters', ['leaders' => $leaders]);
+            return view('leader-search', ['leaders' => $leaders]);
 
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors($e->getMessage())->withInput();
+        }
+    }
+
+    public function voterSearch(Request $request)
+    {
+        try {
+            $query = Voter::whereHas('barangay', function ($query) use ($request) {
+                if ($request->filled('barangay')) {
+                    $query->where('barangay_name', $request->barangay);
+                }
+
+                if ($request->filled('purok')) {
+                    $query->where('purok_name', $request->purok);
+                }
+            });
+
+
+            if ($request->filled('first_name')) {
+                $query->where('first_name', 'like', '%' . $request->first_name . '%');
+            }
+
+            if ($request->filled('last_name')) {
+                $query->where('last_name', 'like', '%' . $request->last_name . '%');
+            }
+
+            if ($request->filled('middle_name')) {
+                $query->where('middle_name', 'like', '%' . $request->middle_name . '%');
+            }
+
+            $voters =  $query->get();
+
+            return view('voters-search', ['voters' => $voters]);
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage())->withInput();
         }

@@ -15,4 +15,14 @@ class Leader extends Model
     {
         return $this->belongsTo(Barangay::class);
     }
+
+    public function voters()
+    {
+        return $this->hasMany(Voter::class, 'leader_id', 'id');
+    }
+
+    public function getFullNameAttribute()
+    {
+        return "{$this->last_name},  {$this->first_name}";
+    }
 }

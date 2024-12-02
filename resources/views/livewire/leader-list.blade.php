@@ -27,9 +27,10 @@
                     <tr class="bg-gray-100 flex">
                         <th class="w-[30%] px-4 py-2 text-left">Leader Name</th>
                         <th class="w-[15%] px-4 py-2 text-left">Barangay</th>
-                        <th class="w-[15%] px-4 py-2 text-left">Purok</th>
-                        <th class="w-[15%] px-4 py-2 text-left">Precinct</th>
-                        <th class="w-[20%] px-4 py-2 text-left">Actions</th>
+                        <th class="w-[15%] px-4 py-2 text-left">Purok/Sitio</th>
+                        <th class="w-[10%] px-4 py-2 text-left">Precinct</th>
+                        <th class="w-[10%] px-4 py-2 text-left">Counts</th>
+                        <th class="w-[30%] px-4 py-2 text-left">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,6 +41,7 @@
                             <td class="w-[15%] px-4 py-4 text-left">{{ $leader->barangay->barangay_name ?? '-' }}</td>
                             <td class="w-[15%] px-4 py-4 text-left">{{ $leader->barangay->purok_name ?? '-' }}</td>
                             <td class="w-[10%] px-4 py-4 text-left">{{ $leader->precinct ?? '-' }}</td>
+                            <td class="w-[10%] px-4 py-4 text-left">{{ $leader->voters->count() }}</td>
                             <td class="w-[30%] px-4 py-4 flex space-x-2">
                                 <button wire:key="leader-{{ $leader->id }}"
                                     wire:click="editL1eader({{ $leader->id }})"
@@ -51,7 +53,7 @@
                                     class="p-2 px-3 bg-red-400 text-white rounded-xl">
                                     Delete
                                 </button>
-                                <a href="{{ route('voter-list', ['leaderId' => $leader->id]) }}"
+                                <a href="{{ route('voters-list', ['leaderId' => $leader->id]) }}"
                                     class="px-2 py-1 bg-green-500 hover:bg-green-300 text-white rounded-xl flex justify-center text-center items-center">
                                     <span> Voter List</span>
                                 </a>

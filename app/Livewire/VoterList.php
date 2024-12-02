@@ -6,6 +6,7 @@ use App\Models\Barangay;
 use App\Models\Leader;
 use App\Models\Voter;
 use Livewire\Component;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class VoterList extends Component
 {
@@ -28,6 +29,7 @@ class VoterList extends Component
     public $edit_purok = '';
     public $edit_precinct = '';
     public $edit_status = '';
+    public $voterList = [];
 
     public function mount($leaderId)
     {
@@ -142,10 +144,10 @@ class VoterList extends Component
                     'first_name' => $voter->first_name,
                     'last_name' => $voter->last_name,
                     'middle_name' => $voter->middle_name,
-                    'barangay' => $voter->barangay->barangay_name ?? 'not assigned',
-                    'purok' => $voter->barangay->purok_name ?? 'not assigned',
-                    'precinct' => $voter->precinct ?? 'not assigned',
-                    'leader' => $voter->leader->last_name . ', ' . $voter->leader->first_name ?? 'not assigned',
+                    'barangay' => optional($voter->barangay)->barangay_name ?? 'Not Assigned',
+                    'purok' => optional($voter->barangay)->purok_name ?? 'Not Assigned',
+                    'precinct' => $voter->precinct ?? 'Not Assigned',
+                    'leader' => optional($voter->leader)->full_name ?? 'Not Assigned',
                 ]);
         }
 
@@ -156,7 +158,7 @@ class VoterList extends Component
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'middle_name' => $this->middle_name,
-            'is_alive' => (int)$this->status,
+            'is_alive' =>  $this->status === '' ? 1 : (int)$this->status,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -172,6 +174,24 @@ class VoterList extends Component
         $voter->delete();
         session()->flash('success', 'Voter deleted successfully!');
         $this->refreshVoterList();
+    }
+
+    public function downloadPDF()
+    {
+
+        $data = [
+            'title' => 'Voter List',
+            'leader' => $this->leader,
+            'voters' => $this->voters,
+        ];
+
+        $pdf = Pdf::loadView('download-pdf', $data)->setPaper('a4', 'portrait');
+
+        // Download PDF file
+        return response()->streamDownload(
+            fn() => print($pdf->stream()),
+            'voter-list.pdf'
+        );
     }
 
     public function render()

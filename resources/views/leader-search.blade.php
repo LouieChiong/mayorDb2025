@@ -13,8 +13,9 @@
                         <tr class="bg-blue-200">
                             <th class="px-4 py-2 text-left">Leader</th>
                             <th class="px-4 py-2 text-left">Barangay</th>
-                            <th class="px-4 py-2 text-left">Purok</th>
+                            <th class="px-4 py-2 text-left">Purok/Sitio</th>
                             <th class="px-4 py-2 text-left">Precinct</th>
+                            <th class="px-4 py-2 text-left">Counts</th>
                             <th class="px-4 py-2 text-left">Action</th>
                         </tr>
                     </thead>
@@ -29,12 +30,13 @@
                             @foreach ($leaders as $leader)
                                 <tr class="hover:bg-gray-50 odd:bg-gray-100 even:bg-white"
                                     wire:key="leader-{{ $leader->id }}">
-                                    <td class="px-4 py-2">{{ $leader->last_name .', '. $leader->first_name }}</td>
-                                    <td class="px-4 py-2">{{ $leader->barangay->barangay_name ?? '-' }}</td>
-                                    <td class="px-4 py-2">{{ $leader->barangay->purok_name ?? '-' }}</td>
+                                    <td class="px-4 py-2">{{ $leader->full_name }}</td>
+                                    <td class="px-4 py-2">{{ optional($leader->barangay)->barangay_name ?? '-' }}</td>
+                                    <td class="px-4 py-2">{{ optional($leader->barangay)->purok_name ?? '-' }}</td>
                                     <td class="px-4 py-2">{{ $leader->precinct ?? '-' }}</td>
+                                    <td class="px-4 py-2">{{ $leader->voters->count() }}</td>
                                     <td class="px-4 py-2">
-                                        <a href="{{ route('voter-list', ['leaderId' => $leader->id]) }}"
+                                        <a href="{{ route('voters-list', ['leaderId' => $leader->id]) }}"
                                             class="px-2 py-1 bg-green-500 hover:bg-green-300 text-white rounded-xl">
                                             Voter List
                                         </a>

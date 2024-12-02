@@ -19,4 +19,9 @@ class Voter extends Model
     {
         return $this->belongsTo(Leader::class, 'leader_id');
     }
+
+    public function getFullNameAttribute()
+    {
+        return "{$this->last_name},  {$this->first_name}";
+    }
 }

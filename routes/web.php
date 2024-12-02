@@ -29,11 +29,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('leaders', [BarangayController::class, 'leaders'])
         ->name('leaders');
 
-    Route::get('voters', [BarangayController::class, 'voters'])
-        ->name('voters');
+    Route::get('leader/search', [BarangayController::class, 'leaderSearch'])
+        ->name('leader-search');
 
-    Route::get('voter-list/{leaderId}', [BarangayController::class, 'voterList'])
-    ->name('voter-list');
+    Route::get('voter/search', [BarangayController::class, 'voterSearch'])
+        ->name('voter-search');
+
+    Route::get('voters-list/{leaderId}', [BarangayController::class, 'voterList'])
+        ->name('voters-list');
+
+    Route::get('download/pdf', function() {
+        return view('download-pdf');
+    });
 
     Route::get('/view-pdf/{file}', function ($file) {
             $path = 'barangay_files/' . $file;

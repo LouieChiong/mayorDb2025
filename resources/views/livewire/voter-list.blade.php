@@ -111,7 +111,7 @@
                     <select id="status" wire:model.live="status"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                         <option value="1">Alive</option>
-                        <option value="0">Ceceased</option>
+                        <option value="0">Deceased</option>
                     </select>
                 </div>
             </div>
@@ -157,7 +157,11 @@
                     @enderror
                 </div>
             </div>
-            <button type="submit" class="mt-2 px-3 py-2 w-24 bg-blue-300 text-white rounded-xl">Create</button>
+
+            <div class="flex gap-2 justify-center items-center">
+                <button type="submit" class="mt-2 px-3 py-2 w-24 bg-blue-500 text-white rounded-xl">Create</button>
+                <button type="button" class="mt-2 px-3 py-2 w-32 bg-green-500 text-white rounded-xl" wire:click="downloadPDF()">Download</button>
+            </div>
         </form>
 
         <div class="flex justify-between items-center w-full p-1">
@@ -165,7 +169,7 @@
                 <table class="w-full table-sm border-collapse border-2 rounded-lg">
                     <thead>
                         <tr class="bg-blue-100">
-                             <th class="px-4 py-2 text-left border">Last Name</th>
+                            <th class="px-4 py-2 text-left border">Last Name</th>
                             <th class="px-4 py-2 text-left border">First Name</th>
                             <th class="px-4 py-2 text-left border">Barangay</th>
                             <th class="px-4 py-2 text-left border">Purok</th>
