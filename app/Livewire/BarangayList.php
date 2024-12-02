@@ -4,6 +4,7 @@ namespace App\Livewire;
 use App\Models\Barangay;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BarangayList extends Component
 {
@@ -23,7 +24,7 @@ class BarangayList extends Component
 
     public function refreshBarangays()
     {
-        $this->barangays = Barangay::all();
+        $this->barangays = Barangay::all()->sortBy(['barangay_name']);
     }
 
     public function editBarangay($id)
@@ -69,6 +70,21 @@ class BarangayList extends Component
         session()->flash('success', 'Barangay successfully deleted!');
         // Refresh the list and close the modal
         $this->refreshBarangays();
+    }
+
+    public function downloadExcel()
+    {
+        $data = [
+            'barangays' => $this->barangays,
+        ];
+
+        $pdf = Pdf::loadView('download-barangay-list', $data)->setPaper('a4', 'landscape');
+
+        // Download PDF file
+        return response()->streamDownload(
+            fn() => print($pdf->stream()),
+            'barangay-list.pdf'
+        );
     }
 
     public function render()

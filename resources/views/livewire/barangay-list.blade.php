@@ -20,21 +20,28 @@
                 </button>
             </div>
         @endif
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg w-full min-h-96 max-h-[30rem]">
+        <div class="relative overflow-x-auto sm:rounded-lg w-full min-h-96 max-h-[30rem]">
+            <div class="w-full flex justify-end items-end p-4">
+                <button type="button" class="bg-green-500 p-2 rounded-xl text-white" wire:click="downloadExcel()">Download List</button>
+            </div>
             <table class="w-full border-collapse">
                 <thead>
                     <tr class="bg-gray-100">
                         <th class="px-4 py-2 text-left">Barangay</th>
-                        <th class="px-4 py-2 text-left">Purok</th> 
-                        <th class="px-4 py-2 text-left">Actions</th>
+                        <th class="px-4 py-2 text-left">Purok</th>
+                        <th class="px-4 py-2 text-left">Purok Leaders</th>
+                        <th class="px-4 py-2 text-left">Purok Members</th>
+                        <th class="px-4 py-2 text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($barangays as $barangay)
                         <tr class="bg-white border-b hover:bg-gray-50" wire:key="barangay-{{ $barangay->id }}">
-                            <td class="w-4 p-4">{{ $barangay->barangay_name ?? '-' }}</td>
-                            <td class="px-6 py-4">{{ $barangay->purok_name ?? '-' }}</td> 
-                            <td class="px-6 py-4 flex space-x-2">
+                            <td class="px-4 py-4">{{ $barangay->barangay_name ?? '-' }}</td>
+                            <td class="px-4 py-4">{{ $barangay->purok_name ?? '-' }}</td>
+                            <td class="px-4 py-4 text-center">{{ optional($barangay->leaders)->count() }}</td>
+                            <td class="px-4 py-4 text-center">{{ optional($barangay->voters)->count() }}</td>
+                            <td class="px-4 py-4 flex space-x-2">
                                 <button wire:key="barangay-{{ $barangay->id }}"
                                     wire:click="editBarangay({{ $barangay->id }})"
                                     class="p-2 px-3 bg-blue-400 text-white rounded-xl">

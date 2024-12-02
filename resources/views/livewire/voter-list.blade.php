@@ -96,7 +96,7 @@
                     @enderror
                 </div>
                 <div class="w-[30%]">
-                    <label for="middle_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last
+                    <label for="middle_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Middle
                         Name</label>
                     <input type="text" id="middle_name" wire:model="middle_name" placeholder="Enter Middle Name"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
@@ -169,8 +169,7 @@
                 <table class="w-full table-sm border-collapse border-2 rounded-lg">
                     <thead>
                         <tr class="bg-blue-100">
-                            <th class="px-4 py-2 text-left border">Last Name</th>
-                            <th class="px-4 py-2 text-left border">First Name</th>
+                            <th class="px-4 py-2 text-left border">Member Name</th>
                             <th class="px-4 py-2 text-left border">Barangay</th>
                             <th class="px-4 py-2 text-left border">Purok</th>
                             <th class="px-4 py-2 text-left border">Precinct</th>
@@ -189,10 +188,9 @@
                             @foreach ($voters as $voter)
                                 <tr class="hover:bg-gray-50 odd:bg-gray-50 even:bg-white"
                                     wire:key="voter-{{ $voter->id }}">
-                                    <td class="px-4 py-2">{{ $voter->last_name }}</td>
-                                    <td class="px-4 py-2">{{ $voter->first_name }}</td>
-                                    <td class="px-4 py-2">{{ $voter->barangay->barangay_name ?? '-' }}</td>
-                                    <td class="px-4 py-2">{{ $voter->barangay->purok_name ?? '-' }}</td>
+                                    <td class="px-4 py-2">{{ $voter->full_name }}</td>
+                                    <td class="px-4 py-2">{{ optional($voter->barangay)->barangay_name ?? '-' }}</td>
+                                    <td class="px-4 py-2">{{ optional($voter->barangay)->purok_name ?? '-' }}</td>
                                     <td class="px-4 py-2">{{ $voter->precinct ?? '-' }}</td>
                                     @if ($voter->is_alive == 1)
                                         <td class="px-4 py-2 text-white"><span class="bg-green-500 p-2">Alive</span>
@@ -258,7 +256,7 @@
                     <div class="w-1/2">
                         <label for="js-status" class="block mb-2 text-sm font-medium">Status</label>
 
-                        <select id="js-status" name="edit_status" wire:model.live="edit_status"
+                        <select id="js-status" name="update_status" wire:model="updateStatus"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             <option value="0" {{ $this->status == 0 ? 'selected' : '' }}>Deceased</option>
                             <option value="1" {{ $this->status == 1 ? 'selected' : '' }}>Alive</option>

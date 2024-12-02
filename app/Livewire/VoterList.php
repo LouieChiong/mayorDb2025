@@ -30,6 +30,7 @@ class VoterList extends Component
     public $edit_precinct = '';
     public $edit_status = 1;
     public $voterList = [];
+    public $updateStatus = '';
 
     public function mount($leaderId)
     {
@@ -40,7 +41,7 @@ class VoterList extends Component
 
     public function refreshVoterList()
     {
-        $this->voters = Voter::where('leader_id', $this->leader->id)->get();
+        $this->voters = Voter::where('leader_id', $this->leader->id)->get()->sortBy(['full_name']);
     }
 
     // Hook for when a property starts updating
@@ -90,9 +91,9 @@ class VoterList extends Component
 
         $voter = Voter::find($this->editVoterId);
         $voter->precinct = $this->edit_precinct;
-        if($this->edit_status != '') {
 
-            $voter->is_alive = $this->edit_status === '' ? 1 : (int)$this->edit_status;
+        if($this->updateStatus != '') {
+            $voter->is_alive = $this->updateStatus === '' ? 1 : (int)$this->updateStatus;
         }
 
         if ($this->edit_barangay != null) {
@@ -185,7 +186,7 @@ class VoterList extends Component
             'voters' => $this->voters,
         ];
 
-        $pdf = Pdf::loadView('download-pdf', $data)->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('download-voters', $data)->setPaper('a4', 'portrait');
 
         // Download PDF file
         return response()->streamDownload(

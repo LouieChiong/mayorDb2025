@@ -29,7 +29,7 @@
                         <th class="w-[15%] px-4 py-2 text-left">Barangay</th>
                         <th class="w-[15%] px-4 py-2 text-left">Purok/Sitio</th>
                         <th class="w-[10%] px-4 py-2 text-left">Precinct</th>
-                        <th class="w-[10%] px-4 py-2 text-left">Counts</th>
+                        <th class="w-[10%] px-4 py-2 text-left">Members</th>
                         <th class="w-[30%] px-4 py-2 text-left">Actions</th>
                     </tr>
                 </thead>
@@ -37,7 +37,7 @@
                     @foreach ($leaders as $leader)
                         <tr class="bg-white border-b flex items-center hover:bg-gray-50 text-sm"
                             wire:key="barangay-{{ $leader->id }}">
-                            <td class="w-[30%] p-4">{{ $leader->first_name . ' '. $leader->last_name  }}</td>
+                            <td class="w-[30%] p-4">{{ $leader->full_name }}</td>
                             <td class="w-[15%] px-4 py-4 text-left">{{ $leader->barangay->barangay_name ?? '-' }}</td>
                             <td class="w-[15%] px-4 py-4 text-left">{{ $leader->barangay->purok_name ?? '-' }}</td>
                             <td class="w-[10%] px-4 py-4 text-left">{{ $leader->precinct ?? '-' }}</td>

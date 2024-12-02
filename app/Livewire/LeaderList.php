@@ -34,7 +34,7 @@ class LeaderList extends Component
 
     public function refreshLeaders()
     {
-        $this->leaders = Leader::all();
+        $this->leaders = Leader::all()->sortBy(['full_name']);
     }
 
     // Hook for when a property starts updating
