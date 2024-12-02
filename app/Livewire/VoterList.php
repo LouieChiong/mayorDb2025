@@ -28,7 +28,7 @@ class VoterList extends Component
     public $edit_barangay = '';
     public $edit_purok = '';
     public $edit_precinct = '';
-    public $edit_status = '';
+    public $edit_status = 1;
     public $voterList = [];
 
     public function mount($leaderId)
@@ -90,9 +90,9 @@ class VoterList extends Component
 
         $voter = Voter::find($this->editVoterId);
         $voter->precinct = $this->edit_precinct;
-
         if($this->edit_status != '') {
-            $voter->is_alive = (int)$this->edit_status;
+
+            $voter->is_alive = $this->edit_status === '' ? 1 : (int)$this->edit_status;
         }
 
         if ($this->edit_barangay != null) {

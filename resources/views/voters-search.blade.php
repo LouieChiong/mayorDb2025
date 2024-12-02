@@ -43,7 +43,7 @@
                                     </td>
                                     <td class="px-4 py-2">
                                         @if ($voter->leader && !empty($voter->leader) && $voter->leader->id)
-                                            <a href="{{ route('leader-list', ['leaderId' => $voter->leader->id]) }}"
+                                            <a href="{{ route('voters-list', ['leaderId' => $voter->leader->id]) }}"
                                                 class="px-2 py-1 bg-green-500 hover:bg-green-300 text-white rounded-xl">
                                                 See Leader
                                             </a>

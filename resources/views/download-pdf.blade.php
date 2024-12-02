@@ -90,11 +90,11 @@
 
         <!-- Details Section -->
         <div class="details">
-            <div>MUNICIPAL: Barobo </div>
-            <div>BARANGAY: {{  optional($leader->barangay)->barangay_name ?? ' Not Assigned' }} </div>
-            <div>PUROK / SITIO: {{  optional($leader->barangay)->purok_name ?? ' Not Assigned' }} </div>
+            <div style="text-transform: capitalize"> <span style="font-weight: bold">MUNICIPAL: BAROBO</span>  </div>
+            <div style="text-transform: capitalize"> <span style="font-weight: bold">BARANGAY:</span> {{  optional($leader->barangay)->barangay_name ?? ' Not Assigned' }} </div>
+            <div style="text-transform: capitalize"> <span style="font-weight: bold">PUROK / SITIO:</span>   {{  optional($leader->barangay)->purok_name ?? ' Not Assigned' }} </div>
             <br>
-            <div>BCHAIR: </div>
+            <div>LEADER: {{ $leader->full_name }} </div>
         </div>
 
         <!-- Voters Table -->
@@ -112,11 +112,6 @@
                 </tr>
             @endforeach
         </table>
-
-        <!-- Footer -->
-        <div class="footer">
-            SUBMITTED BY: {{ $leader->full_name }}
-        </div>
     </div>
 </body>
 </html>

@@ -258,7 +258,7 @@
                     <div class="w-1/2">
                         <label for="js-status" class="block mb-2 text-sm font-medium">Status</label>
 
-                        <select id="js-status" wire:model="edit_status"
+                        <select id="js-status" name="edit_status" wire:model.live="edit_status"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             <option value="0" {{ $this->status == 0 ? 'selected' : '' }}>Deceased</option>
                             <option value="1" {{ $this->status == 1 ? 'selected' : '' }}>Alive</option>
