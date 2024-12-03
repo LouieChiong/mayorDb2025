@@ -99,18 +99,27 @@
 
         <!-- Voters Table -->
         <table class="table">
-            <tr>
-                <th style="width: 10% !important">Members</th>
-                <th>Voter Name</th>
-                <th style="width: 15% !important">PRCNT #</th>
-            </tr>
-            @foreach ($voters as $index => $voter)
+            <thead>
                 <tr>
-                    <td style="width: 10% !important">{{ $index + 1 }}</td>
-                    <td>{{ $voter->full_name }}</td>
-                    <td style="text-align: right, width: 15% !important">{{ $voter->precinct }}</td>
+                    <th style="width: 10% !important">Members</th>
+                    <th>Voter Name</th>
+                    <th style="width: 15% !important">PRCNT #</th>
                 </tr>
-            @endforeach
+            </thead>
+            <tbody>
+                    @foreach ($voters as $index => $voter)
+                        <tr>
+                            <td style="width: 10% !important">{{ $index + 1 }}</td>
+                            <td>{{ $voter->full_name }}</td>
+                            <td style="text-align: right, width: 15% !important">{{ $voter->precinct }}</td>
+                        </tr>
+                    @endforeach
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">Total Count: {{ $voters->count() }}</td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </body>
