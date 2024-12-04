@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Barangay;
 use App\Models\Leader;
 use Livewire\Component;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LeaderForm extends Component
 {
@@ -69,7 +70,22 @@ class LeaderForm extends Component
         // Reset the form fields
         $this->reset(['first_name', 'middle_name', 'last_name', 'barangay', 'purok_name', 'precinct']);
 
-        return redirect()->to(request()->header('Referer'))->with('success', 'Barangay registered successfully!');
+        return redirect()->to(request()->header('Referer'))->with('success', 'Leader registered successfully!');
+    }
+
+    public function downloadPDF()
+    {
+        $data = [
+            'leaders' => Leader::all()->sortBy(['full_name'])
+        ];
+
+        $pdf = Pdf::loadView('download-leader-list', $data)->setPaper('a4', 'landscape');
+
+        // Download PDF file
+        return response()->streamDownload(
+            fn() => print($pdf->stream()),
+            'leader-list.pdf'
+        );
     }
 
     public function render()

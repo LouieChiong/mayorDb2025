@@ -69,6 +69,7 @@
 
                 <div class="flex flex-row w-full gap-x-4 pl-5 mt-5 justify-center items-center">
                     <button type="submit" class="px-3 py-2 bg-blue-300 rounded-xl text-white">Submit</button>
+                    <button type="button" wire:click="downloadPDF()" class="px-3 py-2 bg-green-500 rounded-xl text-white">Download</button>
                 </div>
             </form>
         </div>
