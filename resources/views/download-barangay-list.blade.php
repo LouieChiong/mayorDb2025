@@ -95,20 +95,31 @@
 
         <!-- Voters Table -->
         <table class="table">
-            <tr>
-                <th style="width: 35%; text-align: center">Barangay</th>
-                <th style="width: 35%; text-align: center">Purok / Sitio</th>
-                <th style="width: 15%; text-align: center">Leaders</th>
-                <th style="width: 15%; text-align: center">Members</th>
-            </tr>
-            @foreach ($barangays as $barangay)
+            <thead>
                 <tr>
-                    <td style="width: 35%">{{ $barangay->barangay_name }}</td>
-                    <td style="width: 35%">{{ $barangay->purok_name }}</td>
-                    <td style="text-align: center; width: 15%">{{ optional($barangay->leaders)->count() }}</td>
-                    <td style="text-align: center; width: 15%">{{ optional($barangay->voters)->count() }}</td>
+                    <th style="width: 40%; text-align: center">Barangay</th>
+                    <th style="width: 30%; text-align: center">Purok / Sitio</th>
+                    <th style="width: 15%; text-align: center">Leaders</th>
+                    <th style="width: 15%; text-align: center">Members</th>
                 </tr>
+            </thead>
+            @foreach ($barangays as $barangay)
+                <tbody>
+                    <tr>
+                        <td style="width: 35%">{{ $barangay->barangay_name }}</td>
+                        <td style="width: 35%">{{ $barangay->purok_name }}</td>
+                        <td style="text-align: center; width: 15%">{{ optional($barangay->leaders)->count() }}</td>
+                        <td style="text-align: center; width: 15%">{{ optional($barangay->voters)->count() }}</td>
+                    </tr>
+                </tbody>
             @endforeach
+            <tfoot>
+                <tr>
+                    <td colspan="2">Total Count</td>
+                    <td style="text-align: center; font-weight: bold">{{ $barangays->sum(fn($barangay) => optional($barangay->leaders)->count()) }}</td>
+                    <td style="text-align: center; font-weight: bold">{{ $barangays->sum(fn($barangay) => optional($barangay->voters)->count()) }}</td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </body>

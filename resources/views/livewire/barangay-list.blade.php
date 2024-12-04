@@ -21,10 +21,7 @@
             </div>
         @endif
         <div class="relative overflow-x-auto sm:rounded-lg w-full min-h-96 max-h-[30rem]">
-            <div class="w-full flex justify-end items-end p-4">
-                <button type="button" class="bg-green-500 p-2 rounded-xl text-white" wire:click="downloadExcel()">Download List</button>
-            </div>
-            <table class="w-full border-collapse">
+            <table class="w-full border">
                 <thead>
                     <tr class="bg-gray-100">
                         <th class="px-4 py-2 text-left">Barangay</th>

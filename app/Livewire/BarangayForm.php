@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Barangay;
 use Livewire\WithFileUploads;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BarangayForm extends Component
 {
@@ -50,6 +51,21 @@ class BarangayForm extends Component
         $this->reset(['barangay_name', 'purok_name', 'precinct', 'file']);
 
         return redirect()->to(request()->header('Referer'))->with('success', 'Barangay registered successfully!');
+    }
+
+    public function downloadExcel()
+    {
+        $data = [
+            'barangays' => Barangay::all()->sortBy(['barangay_name'])
+        ];
+
+        $pdf = Pdf::loadView('download-barangay-list', $data)->setPaper('a4', 'landscape');
+
+        // Download PDF file
+        return response()->streamDownload(
+            fn() => print($pdf->stream()),
+            'barangay-list.pdf'
+        );
     }
 
     public function render()
