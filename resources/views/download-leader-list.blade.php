@@ -95,22 +95,31 @@
 
         <!-- Voters Table -->
         <table class="table">
-            <tr>
-                <th style="width: 35%; text-align: center; font-size: 14px">Leader Name</th>
-                <th style="width: 30%; text-align: center; font-size: 14px">Barangay</th>
-                <th style="width: 20%; text-align: center; font-size: 14px">Purok / Sitio</th>
-                <th style="width: 10%; text-align: center; font-size: 14px">Precinct</th>
-                <th style="width: 8%; text-align: center; font-size: 14px">Members</th>
-            </tr>
+            <thead>
+                    <tr>
+                        <th style="width: 35%; text-align: center; font-size: 14px">Leader Name</th>
+                        <th style="width: 30%; text-align: center; font-size: 14px">Barangay</th>
+                        <th style="width: 20%; text-align: center; font-size: 14px">Purok / Sitio</th>
+                        <th style="width: 10%; text-align: center; font-size: 14px">Precinct</th>
+                        <th style="width: 8%; text-align: center; font-size: 14px">Members</th>
+                    </tr>
+            </thead>
             @foreach ($leaders as $leader)
-                <tr>
-                    <td style="font-size: 12px">{{ $leader->full_name ?? '-' }}</td>
-                    <td style="font-size: 12px">{{ $leader->barangay->barangay_name ?? '-' }}</td>
-                    <td style="font-size: 12px">{{ $leader->barangay->purok_name ?? '-' }}</td>
-                    <td style="font-size: 12px; text-align: center">{{ $leader->precinct ?? '-' }}</td>
-                    <td style="font-size: 12px; text-align: center">{{ optional($leader->voters)->count() }}</td>
-                </tr>
+                <tbody>
+                        <tr>
+                            <td style="font-size: 12px">{{ $leader->full_name ?? '-' }}</td>
+                            <td style="font-size: 12px">{{ $leader->barangay->barangay_name ?? '-' }}</td>
+                            <td style="font-size: 12px">{{ $leader->barangay->purok_name ?? '-' }}</td>
+                            <td style="font-size: 12px; text-align: center">{{ $leader->precinct ?? '-' }}</td>
+                            <td style="font-size: 12px; text-align: center">{{ optional($leader->voters)->count() }}</td>
+                        </tr>
+                </tbody>
             @endforeach
+            <tfoot>
+                <tr>
+                    <td colspan="5">Total Leaders: {{ $leaders->count() }}</td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </body>
