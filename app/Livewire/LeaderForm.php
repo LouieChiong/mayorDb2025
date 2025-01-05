@@ -5,7 +5,6 @@ namespace App\Livewire;
 use App\Models\Barangay;
 use App\Models\Leader;
 use Livewire\Component;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class LeaderForm extends Component
 {
@@ -73,19 +72,28 @@ class LeaderForm extends Component
         return redirect()->to(request()->header('Referer'))->with('success', 'Leader registered successfully!');
     }
 
-    public function downloadPDF()
+    public function filterSearch()
     {
         $data = [
-            'leaders' => Leader::all()->sortBy(['full_name'])
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'middle_name' => $this->middle_name,
+            'barangay' => $this->barangay,
+            'purok_name' => $this->purok_name,
+            'precinct' => $this->precinct,
         ];
 
-        $pdf = Pdf::loadView('download-leader-list', $data)->setPaper('a4', 'landscape');
+        $this->dispatch('filter-leader', $data);
+    }
 
-        // Download PDF file
-        return response()->streamDownload(
-            fn() => print($pdf->stream()),
-            'leader-list.pdf'
-        );
+    public function downloadPDF()
+    {
+        $this->dispatch('download-leader');
+    }
+
+    public function resetFilter()
+    {
+        $this->dispatch('reset-leader-list');
     }
 
     public function render()

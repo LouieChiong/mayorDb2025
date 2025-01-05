@@ -18,7 +18,9 @@
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload file</label>
                     <input wire:model="file" accept=".pdf"  class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file">
                 </div>
-                <button type="submit" class="px-3 py-2 bg-blue-300 rounded-xl text-white">Submit</button>
+                <button type="button" class="px-3 py-2 bg-orange-500 rounded-xl text-white" wire:click="filterSearch()">Search</button>
+                <button type="button" class="px-3 py-2 bg-red-500 rounded-xl text-white" wire:click="resetList()">Reset</button>
+                <button type="submit" class="px-3 py-2 bg-blue-500 rounded-xl text-white">Submit</button>
                 <button type="button" class="bg-green-500 p-2 rounded-xl text-white" wire:click="downloadExcel()">Download List</button>
             </div>
         </form>

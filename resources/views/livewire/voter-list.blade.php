@@ -159,6 +159,8 @@
             </div>
 
             <div class="flex gap-2 justify-center items-center">
+                <button type="button" wire:click="filterSearch()" class="w-[130px] px-3 py-2 bg-orange-500 rounded-xl text-white">Filter</button>
+                <button type="button" wire:click="resetFilter()" class="w-[130px] px-3 py-2 bg-red-500 rounded-xl text-white">Reset</button>
                 <button type="submit" class="mt-2 px-3 py-2 w-24 bg-blue-500 text-white rounded-xl">Create</button>
                 <button type="button" class="mt-2 px-3 py-2 w-32 bg-green-500 text-white rounded-xl" wire:click="downloadPDF()">Download</button>
             </div>

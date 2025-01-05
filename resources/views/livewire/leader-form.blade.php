@@ -68,8 +68,10 @@
                 </div>
 
                 <div class="flex flex-row w-full gap-x-4 pl-5 mt-5 justify-center items-center">
-                    <button type="submit" class="px-3 py-2 bg-blue-300 rounded-xl text-white">Submit</button>
-                    <button type="button" wire:click="downloadPDF()" class="px-3 py-2 bg-green-500 rounded-xl text-white">Download</button>
+                    <button type="button" wire:click="filterSearch()" class="w-[130px] px-3 py-2 bg-orange-500 rounded-xl text-white">Filter</button>
+                    <button type="button" wire:click="resetFilter()" class="w-[130px] px-3 py-2 bg-red-500 rounded-xl text-white">Reset</button>
+                    <button type="submit" class="w-[130px] px-3 py-2 bg-blue-500 rounded-xl text-white">Submit</button>
+                    <button type="button" wire:click="downloadPDF()" class="w-[130px] px-3 py-2 bg-green-500 rounded-xl text-white">Download</button>
                 </div>
             </form>
         </div>

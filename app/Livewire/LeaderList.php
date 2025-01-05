@@ -5,6 +5,8 @@ namespace App\Livewire;
 use App\Models\Barangay;
 use App\Models\Leader;
 use Livewire\Component;
+use Livewire\Attributes\On;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LeaderList extends Component
 {
@@ -74,6 +76,66 @@ class LeaderList extends Component
             'purok_name' => $this->purok_name,
             'precinct' => $this->precinct,
         ]);
+    }
+
+    #[On('filter-leader')]
+    public function filterLeader($data)
+    {
+        $query = Leader::query();
+
+        if (!empty($data['first_name'])) {
+            $query->where('first_name', 'like', '%' . $data['first_name'] . '%');
+        }
+
+        if (!empty($data['last_name'])) {
+            $query->where('last_name', 'like', '%' . $data['last_name'] . '%');
+        }
+
+        if (!empty($data['middle_name'])) {
+            $query->where('middle_name', 'like', '%' . $data['middle_name'] . '%');
+        }
+
+        if (!empty($data['barangay'])) {
+            $query->whereHas('barangay', function ($query) use ($data) {
+                $query->where('barangay_name', $data['barangay']);
+            });
+        }
+
+        if (!empty($data['purok_name'])) {
+            $query->whereHas('barangay', function ($query) use ($data) {
+                $query->where('purok_name', $data['purok_name']);
+            });
+        }
+
+        if (!empty($data['precinct'])) {
+            $query->where('precinct', '=' , $data['precinct']);
+        }
+
+        $this->leaders = $query->orderBy('last_name')->get();
+    }
+
+
+
+    #[On('download-leader')]
+    public function downloadLeader()
+    {
+        $data = [
+            'groupLeaders' => $this->leaders->groupBy('barangay_id')->sortBy('last_name'),
+        ];
+
+        $pdf = Pdf::loadView('download-leader-list', $data)->setPaper('a4', 'landscape');
+
+        // Download PDF file
+        return response()->streamDownload(
+            fn() => print($pdf->stream()),
+            'leader-list.pdf'
+        );
+    }
+
+    #[On('reset-leader-list')]
+    public function resetLeaderList()
+    {
+        $this->refreshLeaders();
     }
 
     public function updateLeader()

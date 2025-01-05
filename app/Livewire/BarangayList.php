@@ -4,6 +4,8 @@ namespace App\Livewire;
 use App\Models\Barangay;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Livewire\Attributes\On;
 
 class BarangayList extends Component
 {
@@ -24,6 +26,40 @@ class BarangayList extends Component
     public function refreshBarangays()
     {
         $this->barangays = Barangay::all()->sortBy(['barangay_name']);
+    }
+
+    #[On('filter-barangay')]
+    public function filterBarangay($data)
+    {
+        $query = Barangay::query();
+
+        if (!empty($data['barangay_name'])) {
+            $query->where('barangay_name', 'like', '%' . $data['barangay_name'] . '%');
+        }
+
+        $this->barangays = $query->orderBy('barangay_name')->get();
+    }
+
+    #[On('download-excel')]
+    public function downloadExcel()
+    {
+        $data = [
+            'barangays' => $this->barangays
+        ];
+
+        $pdf = Pdf::loadView('download-barangay-list', $data)->setPaper('a4', 'landscape');
+
+        // Download PDF file
+        return response()->streamDownload(
+            fn() => print($pdf->stream()),
+            'barangay-list.pdf'
+        );
+    }
+
+    #[On('reset-list')]
+    public function resetList()
+    {
+        $this->refreshBarangays();
     }
 
     public function editBarangay($id)

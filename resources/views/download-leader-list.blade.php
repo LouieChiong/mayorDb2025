@@ -62,6 +62,15 @@
         .table th {
             background-color: #f2f2f2;
         }
+
+        .table .next {
+            border:  1px solid #000;
+            border-right: none !important;
+            border-left: none !important;
+            padding: 5px;
+            height: 14px;
+        }
+
         .footer {
             margin-top: 20px;
         }
@@ -104,22 +113,27 @@
                         <th style="width: 8%; text-align: center; font-size: 14px">Members</th>
                     </tr>
             </thead>
-            @foreach ($leaders as $leader)
                 <tbody>
-                        <tr>
-                            <td style="font-size: 12px">{{ $leader->full_name ?? '-' }}</td>
-                            <td style="font-size: 12px">{{ $leader->barangay->barangay_name ?? '-' }}</td>
-                            <td style="font-size: 12px">{{ $leader->barangay->purok_name ?? '-' }}</td>
-                            <td style="font-size: 12px; text-align: center">{{ $leader->precinct ?? '-' }}</td>
-                            <td style="font-size: 12px; text-align: center">{{ optional($leader->voters)->count() }}</td>
-                        </tr>
+                    @if($groupLeaders->isNotEmpty())
+                        @foreach ($groupLeaders as $leaders)
+                            @foreach ($leaders as $leader)
+                                <tr>
+                                    <td style="font-size: 12px">{{ $leader->full_name ?? '-' }}</td>
+                                    <td style="font-size: 12px">{{ $leader->barangay->barangay_name ?? '-' }}</td>
+                                    <td style="font-size: 12px">{{ $leader->barangay->purok_name ?? '-' }}</td>
+                                    <td style="font-size: 12px; text-align: center">{{ $leader->precinct ?? '-' }}</td>
+                                    <td style="font-size: 12px; text-align: center">{{ optional($leader->voters)->count() }}</td>
+                                </tr>
+                            @endforeach
+                            <tr >
+                                <td colspan="5" >{{$leaders->first()->barangay->barangay_name }} leaders: {{ $leaders->count() }} </td>
+                            </tr>
+                            <tr>
+                                <td class="next" colspan="5"></td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
-            @endforeach
-            <tfoot>
-                <tr>
-                    <td colspan="5">Total Leaders: {{ $leaders->count() }}</td>
-                </tr>
-            </tfoot>
         </table>
     </div>
 </body>

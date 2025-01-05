@@ -195,6 +195,37 @@ class VoterList extends Component
         );
     }
 
+    public function filterSearch()
+    {
+        $query = Voter::where('leader_id', $this->leader->id)
+            ->where(function ($query) {
+                $query->where('first_name', 'like', '%' . $this->first_name . '%')
+                    ->where('last_name', 'like', '%' . $this->last_name . '%')
+                    ->where('middle_name', 'like', '%' . $this->middle_name . '%');
+            })
+            ->whereHas('barangay', function ($query) {
+                if ($this->barangay) {
+                    $query->where('barangay_name', '=' ,$this->barangay);
+                }
+
+                if ($this->purok) {
+                    $query->where('purok_name', '=' , $this->purok);
+                }
+            });
+
+            if($this->precinct) {
+                $query->where('precinct', '=', $this->precinct);
+            }
+
+        $this->voters = $query->get();
+    }
+
+    public function resetFilter()
+    {
+        $this->reset('first_name', 'last_name', 'middle_name', 'barangay', 'purok', 'precinct');
+        $this->refreshVoterList();
+    }
+
     public function render()
     {
         return view('livewire.voter-list');
