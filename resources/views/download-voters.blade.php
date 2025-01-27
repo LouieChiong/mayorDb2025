@@ -129,7 +129,7 @@
         </table>
 
         <div style="margin-top: 20px">
-            <p>Confirme:</p>
+            <p>Conforme:</p>
             <p style="text-align: left;">
                 <span style="border-bottom:2px solid">{{ $leader->full_name }}</span>
             </p>
