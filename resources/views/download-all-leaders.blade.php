@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voter List</title>
+    <title>Barangay List</title>
     <style>
         @page {
             size: A4;
@@ -62,6 +62,15 @@
         .table th {
             background-color: #f2f2f2;
         }
+
+        .table .next {
+            border:  1px solid #000;
+            border-right: none !important;
+            border-left: none !important;
+            padding: 5px;
+            height: 14px;
+        }
+
         .footer {
             margin-top: 20px;
         }
@@ -69,7 +78,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header with Logos and Title in a row -->
         <div class="header">
             <table style="width: 100%">
                 <tr>
@@ -91,37 +99,36 @@
         <!-- Details Section -->
         <div class="details">
             <div style="text-transform: capitalize"> <span style="font-weight: bold">MUNICIPAL: BAROBO</span>  </div>
-            <div style="text-transform: capitalize"> <span style="font-weight: bold">Voter List</span>  </div>
+            <div style="text-transform: capitalize"> <span style="font-weight: bold">Leader List</span>  </div>
         </div>
 
-        @php
-            $count = 1;
-        @endphp
         <!-- Voters Table -->
         <table class="table">
             <thead>
-                <tr>
-                    <th style="width: 5% !important; text-align: center; font-size: 14px">#</th>
-                    <th style="width: 35%; text-align: center; font-size: 14px">Voters Name</th>
-                    <th style="width: 20% !important; text-align: center; font-size: 14px">Barangay</th>
-                    <th style="width: 15% !important; text-align: center; font-size: 14px">Purok / Sitio</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($voters as $index => $voter)
                     <tr>
-                        <td style="width: 10% !important; font-size: 12p">{{ $count++ }}</td>
-                        <td style="font-size: 12px">{{ $voter->full_name }}</td>
-                        <td style="font-size: 12px">{{ optional($voter->barangay)->barangay_name }}</td>
-                        <td style="font-size: 12px">{{ optional($voter->barangay)->purok_name }}</td>
+                        <th style="width: 35%; text-align: center; font-size: 14px">Leader Name</th>
+                        <th style="width: 30%; text-align: center; font-size: 14px">Barangay</th>
+                        <th style="width: 20%; text-align: center; font-size: 14px">Purok / Sitio</th>
+                        <th style="width: 10%; text-align: center; font-size: 14px">Precinct</th>
+                        <th style="width: 8%; text-align: center; font-size: 14px">Members</th>
                     </tr>
-                @endforeach
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="4">Total Count: {{ $voters->count() }}</td>
-                </tr>
-            </tfoot>
+            </thead>
+                <tbody>
+                    @foreach ($leaders as $leader)
+                        <tr>
+                            <td style="font-size: 12px">{{ $leader->full_name ?? '-' }}</td>
+                            <td style="font-size: 12px">{{ $leader->barangay->barangay_name ?? '-' }}</td>
+                            <td style="font-size: 12px">{{ $leader->barangay->purok_name ?? '-' }}</td>
+                            <td style="font-size: 12px; text-align: center">{{ $leader->precinct ?? '-' }}</td>
+                            <td style="font-size: 12px; text-align: center">{{ optional($leader->voters)->count() }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5">Total Count: {{ $leaders->count() }}</td>
+                    </tr>
+                </tfoot>
         </table>
     </div>
 </body>
