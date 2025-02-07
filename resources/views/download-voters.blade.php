@@ -131,7 +131,7 @@
         <div style="margin-top: 20px">
             <p>Conforme:</p>
             <p style="text-align: left;">
-                <span style="border-bottom:2px solid">{{ $leader->full_name }}</span>
+                <span style="border-bottom:2px solid">   {{ $leader->full_name }}   </span>
             </p>
             <p style="text-align: left; position: relative; width: 40%;">
                 <span style="text-align: center; position: absolute; top: 18px; left:74px">Signature</span>
