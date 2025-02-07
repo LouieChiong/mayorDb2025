@@ -218,6 +218,10 @@
                         @endif
                     </tbody>
                 </table>
+
+            <div class="mt-4">
+                {{ $voters->links() }}
+            </div>
             </div>
         </div>
     </div>
@@ -271,7 +275,7 @@
                         <select id="barangay" wire:model.live="edit_barangay" required
                             class="bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             <option value="">Select Barangay</option>
-                            @foreach ($barangays as $barangay)
+                            @foreach ($edit_barangays as $barangay)
                                 <option value="{{ $barangay }}">
                                     {{ $barangay }}</option>
                             @endforeach
@@ -283,9 +287,9 @@
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Purok</label>
                         <select id="purok_name" wire:model.live="edit_purok" required
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            {{ empty($puroks) ? 'disabled' : '' }}>
+                            {{ empty($edit_puroks) ? 'disabled' : '' }}>
                             <option value="">Select Purok</option>
-                            @foreach ($puroks as $purok)
+                            @foreach ($edit_puroks as $purok)
                                 <option value="{{ $purok }}">
                                     {{ $purok }}</option>
                             @endforeach
@@ -305,6 +309,22 @@
                             <span class="error text-red-400">{{ $message }}</span>
                         @enderror
                     </div>
+                </div>
+
+                <div class="w-full">
+                    <label for="leader_name"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Leader</label>
+                    <select id="leader_name" wire:model.live="edit_leader" required
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <option value="">Select Leader</option>
+                        @foreach ($leaders as $leader)
+                            <option value="{{ $leader->id }}">
+                                {{ $leader->last_name. ', ' .$leader->first_name }}</option>
+                        @endforeach
+                    </select>
+                    @error('edit_leader')
+                        <span class="error text-red-400">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="flex w-full justify-center items-center gap-x-3">

@@ -37,6 +37,10 @@ class BarangayList extends Component
             $query->where('barangay_name', 'like', '%' . $data['barangay_name'] . '%');
         }
 
+        if (!empty($data['purok_name'])) {
+            $query->where('purok_name', 'like', '%' . $data['purok_name'] . '%');
+        }
+
         $this->barangays = $query->orderBy('barangay_name')->get();
     }
 
