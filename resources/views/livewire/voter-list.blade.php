@@ -238,35 +238,39 @@
             </div>
             <div class="flex flex-col items-center justify-center h-full p-5 w-full gap-y-3">
                 <div class="flex justify-center flex-col items-start w-full">
-                    <div class="w-full">
-                        <label for="first_name"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First Name</label>
-                        <input type="text" id="js-first-name" wire:model="first_name"
-                            class="disabled cursor-not-allowed bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                            placeholder="" disabled />
+                    <div class="w-full flex flex-row gap-2">
+                        <div class="w-full">
+                            <label for="first_name"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First Name</label>
+                            <input type="text" id="js-first-name" wire:model="first_name"
+                                class="disabled cursor-not-allowed bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                placeholder="" disabled />
+                        </div>
+                        <div class="w-full">
+                            <label for="last_name"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
+                            <input type="text" id="js-last-name" wire:model="last_name"
+                                class="disabled cursor-not-allowed bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                placeholder=""disabled />
+                        </div>
                     </div>
-                    <div class="w-full">
-                        <label for="last_name"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
-                        <input type="text" id="js-last-name" wire:model="last_name"
-                            class="disabled cursor-not-allowed bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                            placeholder=""disabled />
-                    </div>
-                    <div class="w-full">
-                        <label for="middle_name"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Middle Name</label>
-                        <input type="text" id="js-middle-name" wire:model="middle_name"
-                            class="disabled cursor-not-allowed bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                            placeholder=""disabled />
-                    </div>
-                    <div class="w-1/2">
-                        <label for="js-status" class="block mb-2 text-sm font-medium">Status</label>
+                    <div class="w-full flex flex-row gap-2">
+                        <div class="w-full">
+                            <label for="middle_name"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Middle Name</label>
+                            <input type="text" id="js-middle-name" wire:model="middle_name"
+                                class="disabled cursor-not-allowed bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                placeholder=""disabled />
+                        </div>
+                        <div class="w-full">
+                            <label for="js-status" class="block mb-2 text-sm font-medium">Status</label>
 
-                        <select id="js-status" name="update_status" wire:model="updateStatus"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                            <option value="0" {{ $this->status == 0 ? 'selected' : '' }}>Deceased</option>
-                            <option value="1" {{ $this->status == 1 ? 'selected' : '' }}>Alive</option>
-                        </select>
+                            <select id="js-status" name="update_status" wire:model="updateStatus"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                <option value="0" {{ $this->status == 0 ? 'selected' : '' }}>Deceased</option>
+                                <option value="1" {{ $this->status == 1 ? 'selected' : '' }}>Alive</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="w-full">
