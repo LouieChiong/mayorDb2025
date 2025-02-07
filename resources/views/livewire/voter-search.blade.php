@@ -107,11 +107,11 @@
                                             <span class="text-white bg-red-500 p-1 rounded-lg">Not Assigned</span>
                                         @endif
                                     </td>
-                                    <td class="px-4 py-2">
+                                    <td class="px-4 py-2 ">
                                         @if ($voter->leader && !empty($voter->leader) && $voter->leader->id)
                                             <a href="{{ route('voters-list', ['leaderId' => $voter->leader->id]) }}"
-                                                class="px-2 py-1 bg-green-500 hover:bg-green-300 text-white rounded-xl">
-                                                See Leader
+                                                class="px-2 py-1 bg-green-500 hover:bg-green-300 text-white rounded-xl w-full flex justify-center items-center">
+                                                <x-svg.user/>
                                             </a>
                                         @endif
                                     </td>

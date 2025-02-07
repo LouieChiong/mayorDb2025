@@ -7,12 +7,15 @@ use App\Models\Leader;
 use App\Models\Voter;
 use Livewire\Component;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Livewire\WithPagination;
 
 class VoterList extends Component
 {
+    use WithPagination;
+
+    public $perPage = 10; // Number of rows per page
     public $leaderId;
     public $leader;
-    public $voters;
     public $editVoterId;
     public $first_name = '';
     public $last_name = '';
@@ -26,22 +29,22 @@ class VoterList extends Component
     public $precincts = [];
     public $isModalOpen = false;
     public $edit_barangay = '';
+    public $edit_barangays = [];
     public $edit_purok = '';
+    public $edit_puroks = [];
     public $edit_precinct = '';
     public $edit_status = 1;
     public $voterList = [];
     public $updateStatus = '';
+    public $leaders = [];
+    public $edit_leader = '';
 
     public function mount($leaderId)
     {
         $this->leader = Leader::find($leaderId);
-        $this->refreshVoterList();
         $this->barangays = Barangay::all()->pluck('barangay_name')->unique();
-    }
-
-    public function refreshVoterList()
-    {
-        $this->voters = Voter::where('leader_id', $this->leader->id)->get()->sortBy(['full_name']);
+        $this->edit_barangays = Barangay::all()->pluck('barangay_name')->unique();
+        $this->leaders = Leader::orderBy('last_name')->get();
     }
 
     // Hook for when a property starts updating
@@ -58,9 +61,8 @@ class VoterList extends Component
     // Hook for when a property starts updating
     public function updatingEditBarangay($value)
     {
-        $this->barangay = $value;
         $this->reset('purok', 'precinct');
-        $this->puroks = Barangay::where('barangay_name', '=', $value)
+        $this->edit_puroks = Barangay::where('barangay_name', '=', $value)
             ->get()
             ->pluck('purok_name')
             ->unique();
@@ -85,12 +87,10 @@ class VoterList extends Component
     {
         $this->validate([
             'edit_barangay' => 'nullable',
-            'edit_purok' => 'required_with:edit_barangay',
-            'edit_precinct' => 'required_with:edit_purok',
+            'edit_purok' => 'required_with:edit_barangay'
         ]);
 
         $voter = Voter::find($this->editVoterId);
-        $voter->precinct = $this->edit_precinct;
 
         if($this->updateStatus != '') {
             $voter->is_alive = $this->updateStatus === '' ? 1 : (int)$this->updateStatus;
@@ -102,13 +102,20 @@ class VoterList extends Component
                 ->get()->first()->id;
         }
 
+        if ($this->edit_precinct != null) {
+            $voter->precinct = $this->edit_precinct;
+        }
+
+        if ($this->edit_leader != null) {
+            $voter->leader_id = $this->edit_leader;
+        }
+
         $voter->save();
 
         session()->flash('success', 'Voter updated successfully!');
-        $this->reset(['edit_barangay', 'edit_purok', 'edit_precinct']);
 
         // Refresh the list and close the modal
-        $this->refreshVoterList();;
+        $this->resetPage();;
         $this->dispatch('closeModal');
     }
 
@@ -177,57 +184,69 @@ class VoterList extends Component
         $this->refreshVoterList();
     }
 
+    public function filterSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function resetFilter()
+    {
+        $this->reset('first_name', 'last_name', 'middle_name', 'barangay', 'purok', 'precinct');
+        $this->resetPage();
+    }
+
     public function downloadPDF()
     {
+        $allVoters = Voter::where('leader_id', $this->leader->id)->orderBy('last_name')->get();
 
         $data = [
             'title' => 'Voter List',
             'leader' => $this->leader,
-            'voters' => $this->voters,
+            'voters' => $allVoters, // Fetching all voters instead of paginated
         ];
 
         $pdf = Pdf::loadView('download-voters', $data)->setPaper('a4', 'portrait');
 
-        // Download PDF file
         return response()->streamDownload(
             fn() => print($pdf->stream()),
             'voter-list.pdf'
         );
     }
 
-    public function filterSearch()
-    {
-        $query = Voter::where('leader_id', $this->leader->id)
-            ->where(function ($query) {
-                $query->where('first_name', 'like', '%' . $this->first_name . '%')
-                    ->where('last_name', 'like', '%' . $this->last_name . '%')
-                    ->where('middle_name', 'like', '%' . $this->middle_name . '%');
-            })
-            ->whereHas('barangay', function ($query) {
-                if ($this->barangay) {
-                    $query->where('barangay_name', '=' ,$this->barangay);
-                }
-
-                if ($this->purok) {
-                    $query->where('purok_name', '=' , $this->purok);
-                }
-            });
-
-            if($this->precinct) {
-                $query->where('precinct', '=', $this->precinct);
-            }
-
-        $this->voters = $query->get();
-    }
-
-    public function resetFilter()
-    {
-        $this->reset('first_name', 'last_name', 'middle_name', 'barangay', 'purok', 'precinct');
-        $this->refreshVoterList();
-    }
-
     public function render()
     {
-        return view('livewire.voter-list');
+        $query = Voter::where('leader_id', $this->leader->id);
+
+        if (!empty($this->first_name)) {
+            $query->where('first_name', 'like', '%' . $this->first_name . '%');
+        }
+
+        if (!empty($this->last_name)) {
+            $query->where('last_name', 'like', '%' . $this->last_name . '%');
+        }
+
+        if (!empty($this->middle_name)) {
+            $query->where('middle_name', 'like', '%' . $this->middle_name . '%');
+        }
+
+        if (!empty($this->barangay)) {
+            $query->whereHas('barangay', function ($query) {
+                $query->where('barangay_name', '=', $this->barangay);
+            });
+        }
+
+        if (!empty($this->purok)) {
+            $query->whereHas('barangay', function ($query) {
+                $query->where('purok_name', '=', $this->purok);
+            });
+        }
+
+        if (!empty($this->precinct)) {
+            $query->where('precinct', '=', $this->precinct);
+        }
+
+        $voters = $query->orderBy('last_name')->paginate($this->perPage);
+
+        return view('livewire.voter-list', compact('voters'));
     }
 }
