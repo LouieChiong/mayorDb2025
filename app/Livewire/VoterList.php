@@ -38,6 +38,7 @@ class VoterList extends Component
     public $updateStatus = '';
     public $leaders = [];
     public $edit_leader = '';
+    public $voters = null;
 
     public function mount($leaderId)
     {
@@ -45,6 +46,12 @@ class VoterList extends Component
         $this->barangays = Barangay::all()->pluck('barangay_name')->unique();
         $this->edit_barangays = Barangay::all()->pluck('barangay_name')->unique();
         $this->leaders = Leader::orderBy('last_name')->get();
+        $this->refreshVoterList();
+    }
+
+    public function refreshVoterList()
+    {
+        $this->voters = Voter::where('leader_id', $this->leader->id)->get();
     }
 
     // Hook for when a property starts updating
@@ -115,8 +122,8 @@ class VoterList extends Component
         session()->flash('success', 'Voter updated successfully!');
 
         // Refresh the list and close the modal
-        $this->resetPage();;
         $this->dispatch('closeModal');
+        $this->refreshVoterList();
     }
 
     public function closeModal()
@@ -172,7 +179,7 @@ class VoterList extends Component
         ]);
 
         $this->reset('first_name', 'last_name', 'middle_name', 'barangay', 'purok', 'precinct');
-        $this->refreshVoterList();
+        $this->resetPage();
         return redirect()->to(request()->header('Referer'))->with('success', 'Voter registered successfully!');
     }
 
@@ -181,39 +188,10 @@ class VoterList extends Component
         $voter = Voter::find($voterId);
         $voter->delete();
         session()->flash('success', 'Voter deleted successfully!');
-        $this->refreshVoterList();
+        $this->resetPage();
     }
 
     public function filterSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function resetFilter()
-    {
-        $this->reset('first_name', 'last_name', 'middle_name', 'barangay', 'purok', 'precinct');
-        $this->resetPage();
-    }
-
-    public function downloadPDF()
-    {
-        $allVoters = Voter::where('leader_id', $this->leader->id)->orderBy('last_name')->get();
-
-        $data = [
-            'title' => 'Voter List',
-            'leader' => $this->leader,
-            'voters' => $allVoters, // Fetching all voters instead of paginated
-        ];
-
-        $pdf = Pdf::loadView('download-voters', $data)->setPaper('a4', 'portrait');
-
-        return response()->streamDownload(
-            fn() => print($pdf->stream()),
-            'voter-list.pdf'
-        );
-    }
-
-    public function render()
     {
         $query = Voter::where('leader_id', $this->leader->id);
 
@@ -245,8 +223,37 @@ class VoterList extends Component
             $query->where('precinct', '=', $this->precinct);
         }
 
-        $voters = $query->orderBy('last_name')->paginate($this->perPage);
+        // Store filtered results instead of fetching in `render`
+        $this->voters = $query->orderBy('last_name')->get();
+    }
 
-        return view('livewire.voter-list', compact('voters'));
+    public function resetFilter()
+    {
+        $this->reset('first_name', 'last_name', 'middle_name', 'barangay', 'purok', 'precinct');
+        $this->refreshVoterList();
+
+    }
+
+    public function downloadPDF()
+    {
+        $allVoters = Voter::where('leader_id', $this->leader->id)->orderBy('last_name')->get();
+
+        $data = [
+            'title' => 'Voter List',
+            'leader' => $this->leader,
+            'voters' => $allVoters, // Fetching all voters instead of paginated
+        ];
+
+        $pdf = Pdf::loadView('download-voters', $data)->setPaper('a4', 'portrait');
+
+        return response()->streamDownload(
+            fn() => print($pdf->stream()),
+            'voter-list.pdf'
+        );
+    }
+
+    public function render()
+    {
+        return view('livewire.voter-list');
     }
 }

@@ -25,8 +25,10 @@
                     <h4>Barangay Voters Search</h4>
                 </div>
                 <div class="mb-3 w-full flex-row text-gray-900 flex items-center justify-center">
-
-                        @livewire('barangay-dropdown')
+                    <div class="flex justify-center items-center gap-x-4 w-full">
+                        <a href="{{ route('leader-search') }}" class="py-3 bg-blue-500 rounded-xl text-white w-auto px-4 text-center">By Leaders</a>
+                        <a href="{{ route('voter-search') }}" class="py-3 bg-blue-500 rounded-xl text-white w-auto px-4 text-center">By Voters</a>
+                    </div>
                 </div>
             </div>
         </div>

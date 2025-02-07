@@ -218,10 +218,6 @@
                         @endif
                     </tbody>
                 </table>
-
-            <div class="mt-4">
-                {{ $voters->links() }}
-            </div>
             </div>
         </div>
     </div>
