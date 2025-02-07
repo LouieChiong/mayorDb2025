@@ -150,6 +150,7 @@ class VoterList extends Component
             ->first();
 
         $voter = Voter::where('first_name', $this->first_name)->where('last_name', $this->last_name)->first();
+        $leader = Leader::where('first_name', $this->first_name)->where('last_name', $this->last_name)->first();
 
         if ($voter) {
             return redirect()
@@ -163,6 +164,21 @@ class VoterList extends Component
                     'purok' => optional($voter->barangay)->purok_name ?? 'Not Assigned',
                     'precinct' => $voter->precinct ?? 'Not Assigned',
                     'leader' => optional($voter->leader)->full_name ?? 'Not Assigned',
+                ]);
+        }
+
+        if ($leader) {
+            return redirect()
+                ->to(request()->header('Referer'))
+                ->with('duplicate-error', 'Voter is alredy a leader!')
+                ->with('data', [
+                    'first_name' => $leader->first_name,
+                    'last_name' => $leader->last_name,
+                    'middle_name' => $leader->middle_name,
+                    'barangay' => optional($leader->barangay)->barangay_name ?? 'Not Assigned',
+                    'purok' => optional($leader->barangay)->purok_name ?? 'Not Assigned',
+                    'precinct' => $leader->precinct ?? 'Not Assigned',
+                    'leader' => 'Already a leader',
                 ]);
         }
 
@@ -188,7 +204,7 @@ class VoterList extends Component
         $voter = Voter::find($voterId);
         $voter->delete();
         session()->flash('success', 'Voter deleted successfully!');
-        $this->resetPage();
+        $this->refreshVoterList();
     }
 
     public function filterSearch()
